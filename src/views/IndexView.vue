@@ -6,6 +6,8 @@
     import { useStore } from 'vuex';
     import { StoreKey } from '../store';
     import { RepositoriesKey, type IRepositories } from '../repositories';
+    import { ToastControl } from '../components/toast/toast-control';
+    import { ToastEnum } from '../types/toast/toast.interface';
     
     export interface IMessage {
         success: boolean;
@@ -34,23 +36,32 @@
 
     const router = useRouter();
 
+    const toastControl = new ToastControl();
+
     const login = async (credentials: ILoginCredentials): Promise<void> => {
         store.dispatch('setLoadingActive', true);
         message.value = undefined;
         const result = await repositories!.authRepository.login(
             credentials.email, 
             credentials.password
-        ).catch((e) => {
+        ).catch((e): false => {
             if(e?.response?.status === 403){
                 message.value = { success: false, message: 'Probably already authenticated, try to refresh page.' };
             }
+            return false;
         });
         if(result){
             const user = await repositories!.authRepository.getUser();
             if(user !== false){
                 store.dispatch('setUser', user);
+                toastControl.create({
+                    body: `Successfully logged in ${user.email} account.`,
+                    type: ToastEnum.SUCCESS,
+                });
+                router.push('/todo');
+            }else{
+                message.value = { success: false, message: 'Failed to load user data.' };
             }
-            router.push('/todo');
         }else {
             if(message.value === undefined){
                 message.value = { success: false, message: 'Invalid login credentials.' };
