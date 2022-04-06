@@ -11,6 +11,8 @@
 	import { repositories, RepositoriesKey } from './repositories';
 	import Loader from './components/Loader.vue';
 	import ToastList from './components/toast/ToastList.vue';
+	import { ToastControl } from './components/toast/toast-control';
+	import { ToastEnum } from './types/toast/toast.interface';
 
 	provide(RepositoriesKey, repositories());
 
@@ -47,10 +49,19 @@
 
 	const isLoadingActive = computed<boolean>(() => store.getters.isLoadingActive);
 
+	const toastControl = new ToastControl();
+	
 	onMounted(async () => {
 		const access = Cookies.get(constants.ACCESS_TOKEN);
 		if(access !== undefined){
-			const user = await authRepository.getUser();
+			const user = await authRepository.getUser().catch(async (e) => {
+				toastControl.create({
+					body: 'Failed to load user info, please login again.',
+					type: ToastEnum.FAILED,
+				});
+				await authRepository.logout();
+				return false;
+			});
 			if(user !== false){
 				store.dispatch('setUser', user);
 				router.push('/todo');
@@ -92,6 +103,14 @@
 				> .center {
 					display: flex;
 					align-self: center;
+				}
+				> .body {
+					display: flex;
+					flex-direction: column;
+					overflow-y: auto;
+				}
+				> .control {
+					padding: 15px 5px;
 				}
 			}
 		}
