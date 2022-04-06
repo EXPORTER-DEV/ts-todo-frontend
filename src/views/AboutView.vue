@@ -1,7 +1,8 @@
 <template>
   	<div class="container content">
 		<div class="about">
-			<h1>This is an about page</h1>
+			<h1>This is an about page of Todo App.</h1>
+			<h2>Here you can login / register to your account, then manage personal your todo list.</h2>
 		</div>
   	</div>
 </template>
