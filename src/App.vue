@@ -71,7 +71,7 @@
 </script>
 
 <template>
-  <div class="container-1200px">
+  <div class="wrapper">
     <Header></Header>
 	<RouterView />
 	<Loader v-show="isLoadingActive"></Loader>
@@ -81,17 +81,16 @@
 
 <style lang="scss">
 	#app {
-		max-width: 1280px;
 		margin: 0 auto;
 		font-weight: normal;
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
-		> .container-1200px {
+		> .wrapper {
 			display: flex;
 			flex-direction: column;
 			height: 100%;
-			> .container.content {
+			> .content {
 				padding: 5px;
 				margin-top: auto;
 				margin-bottom: auto;
