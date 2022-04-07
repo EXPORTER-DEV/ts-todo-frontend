@@ -70,8 +70,8 @@
             </div>
         </div>
         <div class="mb-3" v-if="message !== undefined">
-            <div class="is-invalid" v-if="message.success !== true"></div>
-            <div class="invalid-feedback">
+            <div v-bind:class="{'is-invalid': message.success === false, 'is-valid': message.success === true}"></div>
+            <div v-bind:class="{'invalid-feedback': message.success === false, 'valid-feedback': message.success === true}">
                 {{message.message}}
             </div>
         </div>
